@@ -272,8 +272,6 @@ const BookingOverview = () => {
           </Text>
         </TouchableOpacity>
       </View>
-      
-   <Text>hello</Text>
       {renderConfirmModal()}
     </SafeAreaView>
   )

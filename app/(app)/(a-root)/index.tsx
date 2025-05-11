@@ -1,5 +1,5 @@
-import React from 'react'
-import { View, Image, TouchableOpacity, StatusBar } from 'react-native'
+import React, { useState } from 'react'
+import { View, Image, TouchableOpacity, StatusBar, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Text } from '@/components/ui/text'
 import { Ionicons } from '@expo/vector-icons'
@@ -16,40 +16,28 @@ const DriverHome = () => {
     sessionDuration: '04:21:32',
     date: 'Monday Dec 27, 2025'
   }
-
+  
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.primary }} edges={['top']}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
-      <View style={{ flex: 1, backgroundColor: '#F5F7FA' }}>
+    <SafeAreaView className="flex-1 bg-[#F5F7FA]" edges={['top']}>
+      <StatusBar barStyle="dark-content" backgroundColor="#F5F7FA" />
+      <View className="flex-1 bg-[#F5F7FA]">
         {/* Header */}
-        <View
-          style={{
-            paddingHorizontal: 16,
-            paddingVertical: 12,
-            backgroundColor: colors.primary,
-          }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text style={{ fontSize: 18, fontWeight: '600', color: colors.textwhite }}>
-              Driver Home
-            </Text>
-          </View>
+        <View className="px-5 py-3">
+          <Text className="text-lg font-semibold text-default">
+            Driver Home
+          </Text>
         </View>
 
         {/* Content Area */}
-        <View style={{ flex: 1, padding: 16 }}>
+        <ScrollView className="flex-1 px-5">
           {/* Welcome Card */}
-          <View style={{ marginBottom: 24 }}>
-            <View style={{ 
-              flexDirection: 'row', 
-              justifyContent: 'space-between', 
-              alignItems: 'center',
-              marginBottom: 6 
-            }}>
+          <View className="mb-6">
+            <View className="flex-row justify-between items-center mb-1.5">
               <View>
-                <Text style={{ fontSize: 18, fontWeight: '600', color: colors.default }}>
+                <Text className="text-base font-semibold text-default">
                   Welcome . {driverData.name}
                 </Text>
-                <Text style={{ fontSize: 14, color: colors.subtle }}>
+                <Text className="text-sm text-subtle">
                   {driverData.date}
                 </Text>
               </View>
@@ -59,114 +47,55 @@ const DriverHome = () => {
             </View>
 
             {/* Driver Info Card */}
-            <View style={{ 
-              backgroundColor: colors.textwhite, 
-              borderRadius: 12,
-              padding: 16,
-              marginTop: 8,
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.05,
-              shadowRadius: 8,
-              elevation: 2
-            }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Image 
-                  source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }} 
-                  style={{ 
-                    width: 50, 
-                    height: 50, 
-                    borderRadius: 25,
-                    backgroundColor: '#C7B1FF' 
-                  }} 
-                />
-                <View style={{ marginLeft: 12, flex: 1 }}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={{ fontSize: 16, fontWeight: '600', color: colors.default }}>
-                      {driverData.name}
-                    </Text>
-                    <View style={{ 
-                      backgroundColor: '#E8F5E9', 
-                      paddingHorizontal: 10, 
-                      paddingVertical: 4, 
-                      borderRadius: 16 
-                    }}>
-                      <Text style={{ color: colors.success, fontSize: 12, fontWeight: '600' }}>
-                        {driverData.status}
-                      </Text>
-                    </View>
+            <View className="bg-white rounded-xl p-4 shadow-sm mt-2">
+              <View className="flex-row justify-between mb-4">
+                <View className="flex-row">
+                  <Image 
+                    source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }} 
+                    className="w-12 h-12 rounded-full bg-[#C7B1FF] mr-3" 
+                  />
+                  <View className="justify-center">
+                    <Text className="text-default font-semibold">{driverData.name}</Text>
+                    <Text className="text-subtle text-xs">{driverData.id}</Text>
                   </View>
-                  <Text style={{ color: colors.subtle, fontSize: 14 }}>
-                    {driverData.id}
-                  </Text>
+                </View>
+                <View className="bg-[#EBF9EC] h-6 px-3 rounded-full justify-center">
+                  <Text className="text-[#4CAF50] text-xs font-medium">ONLINE</Text>
                 </View>
               </View>
               
-              <View style={{ 
-                flexDirection: 'row', 
-                justifyContent: 'space-between',
-                marginTop: 16,
-                paddingTop: 12,
-                borderTopWidth: 1,
-                borderTopColor: '#F0F0F0'
-              }}>
-                <Text style={{ color: colors.subtle, fontSize: 14 }}>
-                  Logged from {driverData.loggedTime}
-                </Text>
-                <Text style={{ color: colors.default, fontSize: 14, fontWeight: '500' }}>
-                  {driverData.sessionDuration}
-                </Text>
+              <View className="flex-row justify-between border-t border-[#F0F0F0] pt-3">
+                <Text className="text-subtle text-sm">Logged from {driverData.loggedTime}</Text>
+                <Text className="text-default text-sm font-medium">{driverData.sessionDuration}</Text>
               </View>
             </View>
           </View>
 
           {/* Current Task Section */}
           <View>
-            <Text style={{ 
-              fontSize: 18, 
-              fontWeight: '600', 
-              color: colors.default,
-              marginBottom: 16 
-            }}>
+            <Text className="text-base font-semibold text-default mb-4">
               Current Task
             </Text>
             
-            <View style={{ 
-              backgroundColor: '#EEF2F7', 
-              borderRadius: 12,
-              padding: 24,
-              alignItems: 'center',
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 1 },
-              shadowOpacity: 0.03,
-              shadowRadius: 4,
-              elevation: 1
-            }}>
-              <View style={{ marginBottom: 24, width: 180, height: 120, justifyContent: 'center', alignItems: 'center' }}>
-                <Ionicons name="document-text-outline" size={80} color="#A0A0A0" />
+            {/* Only showing the No Tasks view as per the Figma design */}
+            <View className="bg-[#EEF2F7] rounded-xl p-6 items-center shadow-sm">
+              {/* Using SVG components to match the illustration in Figma */}
+              <View className="w-[180px] h-[120px] mb-4 justify-center items-center">
+                <Ionicons name="person-outline" size={60} color="#A0A0A0" style={{ position: 'absolute', left: 20 }} />
+                <Ionicons name="desktop-outline" size={65} color="#A0A0A0" style={{ position: 'absolute', right: 20 }} />
+                <Ionicons name="document-outline" size={30} color="#A0A0A0" style={{ position: 'absolute', top: 15, right: 45 }} />
               </View>
               
-              <Text style={{ 
-                fontSize: 16, 
-                fontWeight: '600', 
-                color: colors.default,
-                marginBottom: 8
-              }}>
+              <Text className="text-base font-semibold text-default mb-2">
                 No Assigned Tasks
               </Text>
               
-              <Text style={{ 
-                fontSize: 14, 
-                color: colors.subtle,
-                textAlign: 'center',
-                lineHeight: 20,
-                maxWidth: '90%'
-              }}>
+              <Text className="text-sm text-subtle text-center leading-5 max-w-[90%]">
                 You have no tasks assigned at the moment. Sit back and relax or check back later for updates.
               </Text>
             </View>
           </View>
-        </View>
+        </ScrollView>
       </View>
     </SafeAreaView>
   )

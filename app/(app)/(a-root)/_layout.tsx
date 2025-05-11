@@ -1,6 +1,6 @@
 import React from 'react'
 import { Href, Tabs } from 'expo-router'
-import { Text } from '@/components/ui/text'
+import { Text, View } from 'react-native'
 import HomeIcon from '@/assets/svgs/tabs/HomeIcon'
 import HomeOutlineIcon from '@/assets/svgs/tabs/HomeOutlineIcon'
 import DealsIcon from '@/assets/svgs/tabs/DealsIcon'
@@ -11,12 +11,7 @@ import ProfileIcon from '@/assets/svgs/tabs/ProfileIcon'
 import ProfileOutlineIcon from '@/assets/svgs/tabs/ProfileOutlineIcon'
 import ShopIcon from '@/assets/svgs/tabs/ShopIcon'
 import ShopOutlineIcon from '@/assets/svgs/tabs/ShopOutlineIcon'
-
-const Label = ({ focused, title }: { focused: boolean; title: string }) => (
-  <Text className={`text-sm ${focused ? 'text-primary' : 'text-disable'}`}>
-    {title}
-  </Text>
-)
+import colors from '@/lib/colors'
 const RootLayout = () => {
   const tabs = [
     {
@@ -24,76 +19,78 @@ const RootLayout = () => {
       href: '/',
       name: 'index',
       title: 'Home',
-      tabBarLabel: ({ focused }: { focused: boolean }) => (
-        <Label focused={focused} title="Home" />
-      ),
-      tabBarIcon: ({ focused }: { focused: boolean }) =>
-        focused ? <HomeIcon /> : <HomeOutlineIcon />,
+      icon: HomeIcon,
+      inactiveIcon: HomeOutlineIcon
     },
     {
       headerShown: false,
       href: '/assigned-task',
       name: 'assigned-task',
       title: 'Assigned Task',
-      tabBarLabel: ({ focused }: { focused: boolean }) => (
-        <Label focused={focused} title="Assigned Task" />
-      ),
-      tabBarIcon: ({ focused }: { focused: boolean }) =>
-        focused ? <DealsIcon /> : <DealsOutlineIcon />,
+      icon: DealsIcon,
+      inactiveIcon: DealsOutlineIcon
     },
     {
       headerShown: false,
       href: '/history',
       name: 'history',
       title: 'History',
-      tabBarLabel: ({ focused }: { focused: boolean }) => (
-        <Label focused={focused} title="History" />
-      ),
-      tabBarIcon: ({ focused }: { focused: boolean }) =>
-        focused ? <MyCarsIcon /> : <MyCarsOutlineIcon />,
+      icon: MyCarsIcon,
+      inactiveIcon: MyCarsOutlineIcon
     },
     {
       headerShown: false,
       href: '/profile',
       name: 'profile',
       title: 'Profile',
-      tabBarLabel: ({ focused }: { focused: boolean }) => (
-        <Label focused={focused} title="Profile" />
-      ),
-      tabBarIcon: ({ focused }: { focused: boolean }) =>
-        focused ? <ProfileIcon /> : <ProfileOutlineIcon />,
+      icon: ProfileIcon,
+      inactiveIcon: ProfileOutlineIcon
     },
   ]
+  
   return (
     <Tabs
       screenOptions={{
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.disable,
         tabBarStyle: {
-          paddingVertical: 10,
           backgroundColor: 'white',
+          paddingBottom: 8,
+          height: 65,
+          paddingTop: 8
         },
-      }}>
-      {tabs.map(
-        ({ name, href, tabBarIcon, title, tabBarLabel, headerShown }, i) => (
-          <Tabs.Screen
-            name={name}
-            options={{
-              href: href as Href,
-              headerShown,
-              tabBarIcon,
-              tabBarLabel,
-              title: title || name?.[0]?.toUpperCase() + name.substring(1),
-              tabBarStyle: {
-                display: 'flex',
-                paddingVertical: 8,
-                backgroundColor: 'white',
-              },
-            }}
-            key={i}
-          />
-        )
-      )}
+        tabBarLabelPosition: "below-icon",
+        tabBarIconStyle: {
+          marginBottom: 0
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          marginTop: 4
+        }
+      }}
+    >
+      {tabs.map(({ name, href, title, headerShown, icon: Icon, inactiveIcon: InactiveIcon }) => (
+        <Tabs.Screen
+          key={name}
+          name={name}
+          options={{
+            href: href as Href,
+            headerShown,
+            title: title || name,
+            tabBarIcon: ({ color, focused }) => {
+              const IconComponent = focused ? Icon : InactiveIcon;
+              return <IconComponent />;
+            },
+            tabBarLabel: ({ focused }) => (
+              <Text style={{ color: focused ? colors.primary : colors.disable, fontSize: 11 }}>
+                {title}
+              </Text>
+            ),
+          }}
+        />
+      ))}
     </Tabs>
-  )
-}
+  );
+};
 
 export default RootLayout
