@@ -1,0 +1,83 @@
+const colors = {
+  primary: '#002C69',
+  secondary: '#004B8D',
+  tertiary: '#D6DFFF',
+  light: '#E6F0F8',
+  dark: '#001D4B',
+  default: '#212121',
+  subtle: '#757575',
+  placeholder: '#BDBDBD',
+  title: '#BDBDBD',
+  subtitle: '#424242',
+  disable: '#989898',
+  danger: '#DA0000',
+  pink: '#EFD4D5',
+  textdark: '#000000',
+  textdisable: '#d9dbe0',
+  textwhite: '#ffffff',
+  gray01: '#6B7280',
+  gray02: '#616161',
+  gray03: '#9E9E9E',
+  gray04: '#747474',
+  dayText: '#2d4150',
+  rating: '#FFB127',
+  success: '#68AC6A',
+  warn: '#E3A14E',
+  light_blue:"#209EFF",
+  light_green:"#008020",
+  light_red:"#FF4B4B",
+  light_gray:"#666666",
+  background: {
+    primary: '#DBEAFE',
+    secondary: '#F3E8FF',
+    disable: '#9CA3AF',
+    green: '#4CE5B112',
+    warn: '#FFF1E1',
+  },
+  brand: {
+    red: '#DB1A21',
+  },
+  input: {
+    contained: '#F5F9FE',
+    outlined: '#3B4054',
+    gray: '#EFF1F3',
+  },
+  border: {
+    default: '#94A3B8',
+    selected: '#010101',
+    gray: '#BDBDC7',
+    gray2: '#4A445929',
+  },
+  text: {
+    secondary: '#8E8E8E',
+    gray: {
+      40: '#656565',
+    },
+    link: {
+      10: '#0956C0',
+    },
+    brown: {
+      10: '#3D3C3F',
+    },
+    green: {
+      10: '#099F4F',
+    },
+  },
+  shadow: {
+    light: {
+      color: '#000',
+      opacity: 0.1,
+      offset: { width: 0, height: 2 },
+      radius: 8,
+      elevation: 4,
+    },
+  },
+  product: {
+    orange: '#D58548',
+    silver: '#A2B1B9',
+    teal: '#7C9A9F',
+    pink: '#E6B8B0',
+    gray: '#5D5D65',
+  },
+}
+export default colors
