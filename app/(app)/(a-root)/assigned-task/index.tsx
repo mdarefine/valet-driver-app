@@ -1,22 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { View, TouchableOpacity, ScrollView, TextInput, StyleSheet, Image, ActivityIndicator, Alert, RefreshControl } from 'react-native'
+import { View, TouchableOpacity, ScrollView, TextInput, ActivityIndicator, Alert, RefreshControl, StatusBar } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Text } from '@/components/ui/text'
-import { Ionicons, MaterialIcons, FontAwesome } from '@expo/vector-icons'
+import { Ionicons } from '@expo/vector-icons'
 import colors from '@/lib/colors'
 import { useRouter } from 'expo-router'
-
-interface TaskItem {
-  id: string;
-  pickupLocation: string;
-  dropOffLocation: string;
-  time: string;
-  date: string;
-  distance: string;
-  duration: string;
-  price: string;
-  status: 'upcoming' | 'assigned';
-}
+import UpcomingTaskCard from '@/components/specific/assigntask/UpcomingTaskCard'
+import AssignedTaskCard from '@/components/specific/assigntask/AssignedTaskCard'
+import { TaskItem } from '@/components/specific/assigntask/types'
 
 const AssignedTaskPage = () => {
   const router = useRouter()
@@ -29,6 +20,10 @@ const AssignedTaskPage = () => {
   const tasks: TaskItem[] = [
     {
       id: '1',
+      userName: 'John Doe',
+      userImage: 'https://randomuser.me/api/portraits/men/32.jpg',
+      vehicleModel: 'Nisan CTR',
+      vehiclePlate: 'B457XD',
       pickupLocation: 'Okopowa 11/72, 01-042 Warszawa',
       dropOffLocation: '105 William St, Chicago, US',
       time: '10:30 PM',
@@ -40,6 +35,10 @@ const AssignedTaskPage = () => {
     },
     {
       id: '2',
+      userName: 'Carrie',
+      userImage: 'https://randomuser.me/api/portraits/women/32.jpg',
+      vehicleModel: 'Nisan CTR',
+      vehiclePlate: 'B457XD',
       pickupLocation: 'Okopowa 11/72, 01-042 Warszawa',
       dropOffLocation: '105 William St, Chicago, US',
       time: '10:30 PM',
@@ -48,6 +47,36 @@ const AssignedTaskPage = () => {
       duration: '30 min',
       price: '$25.00',
       status: 'upcoming'
+    },
+    {
+      id: '3',
+      userName: 'John Doe',
+      userImage: 'https://randomuser.me/api/portraits/men/32.jpg',
+      vehicleModel: 'Nisan CTR',
+      vehiclePlate: 'B457XD',
+      pickupLocation: 'Okopowa 11/72, 01-042 Warszawa',
+      dropOffLocation: '105 William St, Chicago, US',
+      time: '1:30 PM',
+      date: 'Jan 24 2025',
+      distance: '55.9 km',
+      duration: '1hour 1 min',
+      price: '$45.00',
+      status: 'assigned'
+    },
+    {
+      id: '4',
+      userName: 'Sarah Miller',
+      userImage: 'https://randomuser.me/api/portraits/women/44.jpg',
+      vehicleModel: 'Toyota Camry',
+      vehiclePlate: 'T789AB',
+      pickupLocation: '221B Baker Street, London',
+      dropOffLocation: '10 Downing Street, London',
+      time: '3:45 PM',
+      date: 'Jan 25 2025',
+      distance: '8.2 km',
+      duration: '22 min',
+      price: '$18.50',
+      status: 'assigned'
     }
   ]
 
@@ -103,134 +132,87 @@ const AssignedTaskPage = () => {
     )
   }
 
-  const renderTaskItem = (task: TaskItem) => (
-    <TouchableOpacity 
-      key={task.id} 
-      className="mb-4 bg-white rounded-lg overflow-hidden shadow-sm"
-      onPress={() => navigateToBookingDetails(task.id)}
-      activeOpacity={0.7}
-    >
-      <View className="p-4 pb-2">
-        <View className="flex-row justify-between items-center">
-          <View className="flex-row items-center">
-            <Ionicons name="calendar-outline" size={20} color={colors.subtle} />
-            <Text className="ml-2 text-[15px] text-gray-700">{task.time}, {task.date}</Text>
-          </View>
+  // Render task item based on which tab is active
+  const renderTaskItem = (task: TaskItem) => {
+    if (activeTab === 'assigned') {
+      return (
+        <AssignedTaskCard 
+          key={task.id}
+          task={task}
+          onAcceptPress={navigateToBookingDetails}
+          onRejectPress={(taskId) => Alert.alert('Reject', 'Task rejected')}
+        />
+      );
+    } else {
+      return (
+        <UpcomingTaskCard 
+          key={task.id}
+          task={task}
+          onTaskPress={navigateToBookingDetails}
+          onStartPress={handleStartTask}
+        />
+      );
+    }
+  }
+
+  return (
+    <SafeAreaView className="flex-1 bg-white" edges={['top']}>
+      <StatusBar barStyle="light-content" backgroundColor="#00296B" />
+      
+      {/* Header with blue background */}
+      <View className="bg-[#00296B]">
+        {/* Tab Navigation */}
+        <View className="flex-row">
           <TouchableOpacity 
-            className="bg-gray-100 rounded-full px-4 py-1 flex-row items-center"
-            style={{ backgroundColor: colors.background.primary }}
-            onPress={(e) => handleStartTask(task.id, e)}
+            className="flex-1 py-4 items-center"
+            style={{
+              backgroundColor: activeTab === 'upcoming' ? '#00296B' : '#EBF2F7',
+              borderBottomWidth: activeTab === 'upcoming' ? 3 : 0,
+              borderBottomColor: activeTab === 'upcoming' ? 'white' : 'transparent'
+            }}
+            onPress={() => setActiveTab('upcoming')}
           >
-            <Ionicons name="play" size={14} color={colors.light_blue} />
-            <Text className="ml-1 text-[13px]" style={{ color: colors.light_blue }}>Start</Text>
+            <Text 
+              className="font-medium text-base" 
+              style={{ color: activeTab === 'upcoming' ? 'white' : '#00296B' }}
+            >
+              Up Coming
+            </Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            className="flex-1 py-4 items-center"
+            style={{
+              backgroundColor: activeTab === 'assigned' ? '#00296B' : '#EBF2F7',
+              borderBottomWidth: activeTab === 'assigned' ? 3 : 0,
+              borderBottomColor: activeTab === 'assigned' ? 'white' : 'transparent'
+            }}
+            onPress={() => setActiveTab('assigned')}
+          >
+            <Text 
+              className="font-medium text-base"
+              style={{ color: activeTab === 'assigned' ? 'white' : '#00296B' }}
+            >
+              Assigned
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      <View className="px-4 pt-2 pb-4">
-        <View className="flex-row items-start mb-4">
-          <View className="mr-3 items-center">
-            <View className="w-8 h-8 rounded-full bg-green-100 items-center justify-center" 
-                  style={{ backgroundColor: '#E8F5E9' }}>
-              <View className="w-3 h-3 rounded-full" style={{ backgroundColor: colors.light_green }} />
-            </View>
-            <View className="h-14 w-[1px] bg-gray-300 my-1" />
-            <View className="w-8 h-8 rounded-full bg-red-100 items-center justify-center"
-                  style={{ backgroundColor: '#FFEBEE' }}>
-              <View className="w-3 h-3 rounded-full" style={{ backgroundColor: colors.light_red }} />
-            </View>
-          </View>
-          
-          <View className="flex-1">
-            <View className="mb-4">
-              <Text className="text-[12px] text-gray-500 mb-1">PICKUP</Text>
-              <Text className="text-[14px] font-medium">{task.pickupLocation}</Text>
-              <View className="bg-green-50 self-start rounded px-2 py-1 mt-1">
-                <Text className="text-[12px] text-green-700">
-                  12 km • 30 min EST
-                </Text>
-              </View>
-            </View>
-            
-            <View>
-              <Text className="text-[12px] text-gray-500 mb-1">DROP-OFF</Text>
-              <Text className="text-[14px] font-medium">{task.dropOffLocation}</Text>
-            </View>
-          </View>
-        </View>
-        
-        <View className="flex-row items-center justify-between pt-2 border-t border-gray-100">
-          <View className="flex-row items-center">
-            <Ionicons name="car-outline" size={20} color={colors.subtle} />
-            <Text className="text-[13px] text-gray-700 font-medium ml-2">DISTANCE</Text>
-            <Text className="text-[13px] font-bold ml-1">{task.distance}</Text>
-          </View>
-          
-          <View className="flex-row items-center">
-            <Ionicons name="time-outline" size={18} color={colors.subtle} />
-            <Text className="text-[13px] text-gray-700 font-medium ml-1">TIME</Text>
-            <Text className="text-[13px] font-bold ml-1">{task.duration}</Text>
-          </View>
-          
-          <View className="flex-row items-center">
-            <Ionicons name="pricetag-outline" size={18} color={colors.subtle} />
-            <Text className="text-[13px] text-gray-700 font-medium ml-1">PRICE</Text>
-            <Text className="text-[13px] font-bold ml-1">{task.price}</Text>
-          </View>
-        </View>
-      </View>
-    </TouchableOpacity>
-  )
-
-  return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: 'white' }} edges={['top']}>
-      {/* Tab Navigation */}
-      <View className="flex-row mb-4">
-        <TouchableOpacity 
-          className="flex-1 py-4 items-center"
-          style={{
-            backgroundColor: activeTab === 'upcoming' ? colors.primary : '#EBF2F7',
-            borderBottomWidth: activeTab === 'upcoming' ? 0 : 0
-          }}
-          onPress={() => setActiveTab('upcoming')}
-        >
-          <Text 
-            className="font-medium text-base" 
-            style={{ color: activeTab === 'upcoming' ? colors.textwhite : colors.default }}
-          >
-            Up Coming
-          </Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          className="flex-1 py-4 items-center"
-          style={{
-            backgroundColor: activeTab === 'assigned' ? colors.primary : '#EBF2F7',
-            borderBottomWidth: activeTab === 'assigned' ? 0 : 0
-          }}
-          onPress={() => setActiveTab('assigned')}
-        >
-          <Text 
-            className="font-medium text-base"
-            style={{ color: activeTab === 'assigned' ? colors.textwhite : colors.default }}
-          >
-            Assigned
-          </Text>
-        </TouchableOpacity>
-      </View>
-
       {/* Search Bar */}
-      <View className="px-4 mb-4">
-        <View className="flex-row items-center bg-gray-100 rounded-md px-3 py-2">
-          <Ionicons name="search" size={20} color={colors.subtle} />
-          <TextInput
-            className="flex-1 ml-2 text-base"
-            placeholder="Search"
-            value={searchText}
-            onChangeText={setSearchText}
-          />
+      <View className="px-4 py-4">
+        <View className="flex-row items-center justify-between">
+          <View className="flex-row items-center bg-gray-100 rounded-md px-3 py-2 flex-1 mr-2">
+            <Ionicons name="search" size={20} color={colors.subtle} />
+            <TextInput
+              className="flex-1 ml-2 text-base"
+              placeholder="Search"
+              value={searchText}
+              onChangeText={setSearchText}
+            />
+          </View>
           <TouchableOpacity>
-            <Ionicons name="options-outline" size={22} color={colors.primary} />
+            <Ionicons name="filter-outline" size={22} color={colors.default} />
           </TouchableOpacity>
         </View>
       </View>
