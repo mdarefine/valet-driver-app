@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import { View, TouchableOpacity, ScrollView, TextInput, StyleSheet, Image, Modal, ActivityIndicator } from 'react-native'
+import React, { useState } from 'react'
+import { View, TouchableOpacity, ScrollView, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Text } from '@/components/ui/text'
 import { Ionicons } from '@expo/vector-icons'
 import colors from '@/lib/colors'
 import { useRouter, useLocalSearchParams } from 'expo-router'
+import CompleteTaskModal from '@/components/specific/assigntask/CompleteTaskModal'
 
 interface BookingDetailsProps {
   id: string;
@@ -29,7 +30,7 @@ const BookingOverview = () => {
   const [isCompleteModalVisible, setIsCompleteModalVisible] = useState(false)
   const [description, setDescription] = useState('')
   const [isComplete, setIsComplete] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [isStarted, setIsStarted] = useState(false)
   
   // Get the task ID from the URL parameters
   const taskId = params.id as string
@@ -51,77 +52,14 @@ const BookingOverview = () => {
     startTime: '1:30 PM',
     endTime: '01:30 PM',
   }
-  
-  // Simulate loading data
-  useEffect(() => {
-    // Simulate API call delay
-    const timer = setTimeout(() => {
-      setLoading(false)
-    }, 800)
-    
-    return () => clearTimeout(timer)
-  }, [])
 
-  const handleComplete = () => {
-    // Show loading
-    setLoading(true)
-    
-    // Simulate API call to mark task as complete
-    setTimeout(() => {
-      setIsComplete(true)
-      setIsCompleteModalVisible(false)
-      setLoading(false)
-    }, 500)
+  const handleStart = () => {
+    setIsStarted(true)
   }
 
-  const renderConfirmModal = () => (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={isCompleteModalVisible}
-      onRequestClose={() => setIsCompleteModalVisible(false)}
-    >
-      <View className="flex-1 bg-black/50 justify-center items-center">
-        <View className="bg-white rounded-lg w-[90%] p-6">
-          <View className="items-center mb-4">
-            <View className="w-12 h-12 rounded-full bg-primary items-center justify-center mb-3">
-              <Ionicons name="location" size={24} color="white" />
-            </View>
-            <Text className="text-xl font-bold text-primary mb-2">Confirm Completion</Text>
-            <Text className="text-center text-gray-600 mb-4">
-              You have reached the final destination. Please ensure all items have been delivered successfully before marking this task as complete.
-            </Text>
-          </View>
-          
-          <Text className="text-gray-600 mb-2">Description(optional)</Text>
-          <TextInput
-            className="border border-gray-300 rounded-md p-3 mb-5 w-full"
-            placeholder="Enter additional note"
-            multiline
-            numberOfLines={2}
-            value={description}
-            onChangeText={setDescription}
-          />
-          
-          <TouchableOpacity 
-            className="bg-primary py-3 rounded-md items-center"
-            onPress={handleComplete}
-          >
-            <Text className="text-white font-medium">Mark as complete</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Modal>
-  )
-  
-  // If loading, show loading indicator
-  if (loading) {
-    return (
-      <SafeAreaView className="flex-1 bg-white justify-center items-center" edges={['top']}>
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text className="mt-4 text-gray-600">Loading booking details...</Text>
-      </SafeAreaView>
-    )
+  const handleComplete = () => {
+    setIsComplete(true)
+    setIsCompleteModalVisible(false)
   }
 
   return (
@@ -151,15 +89,23 @@ const BookingOverview = () => {
           </View>
           
           <TouchableOpacity 
-            className={`rounded-full px-4 py-1 ${isComplete ? 'bg-green-100' : 'bg-blue-100'}`}
-            onPress={() => !isComplete && setIsCompleteModalVisible(true)}
+            className={`rounded-full px-4 py-1 ${isComplete ? 'bg-green-100' : isStarted ? 'bg-blue-100' : 'bg-blue-100'}`}
+            onPress={() => {
+              if (isComplete) return;
+              if (isStarted) {
+                setIsCompleteModalVisible(true);
+              } else {
+                handleStart();
+              }
+            }}
+            disabled={isComplete}
           >
             <View className="flex-row items-center">
               {isComplete && <Ionicons name="checkmark-circle" size={16} color={colors.success} style={{ marginRight: 4 }} />}
               <Text 
                 className={`${isComplete ? 'text-green-600' : 'text-blue-600'} font-medium`}
               >
-                {isComplete ? 'Complete' : 'Start'}
+                {isComplete ? 'Completed' : isStarted ? 'Complete' : 'Start'}
               </Text>
             </View>
           </TouchableOpacity>
@@ -264,15 +210,29 @@ const BookingOverview = () => {
       <View className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100">
         <TouchableOpacity 
           className="bg-primary py-4 rounded-md items-center"
-          onPress={() => !isComplete ? setIsCompleteModalVisible(true) : {}}
+          onPress={() => {
+            if (isComplete) return;
+            if (isStarted) {
+              setIsCompleteModalVisible(true);
+            } else {
+              handleStart();
+            }
+          }}
           disabled={isComplete}
         >
           <Text className="text-white font-bold text-lg">
-            {isComplete ? 'Complete' : 'Start'}
+            {isComplete ? 'Completed' : isStarted ? 'Complete Task' : 'Start Task'}
           </Text>
         </TouchableOpacity>
       </View>
-      {renderConfirmModal()}
+      
+      <CompleteTaskModal 
+        isVisible={isCompleteModalVisible}
+        description={description}
+        setDescription={setDescription}
+        onClose={() => setIsCompleteModalVisible(false)}
+        onComplete={handleComplete}
+      />
     </SafeAreaView>
   )
 }

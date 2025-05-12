@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, Image } from 'react-native'
 import { Text } from '@/components/ui/text'
 import { Ionicons } from '@expo/vector-icons'
 import colors from '@/lib/colors'
@@ -11,25 +11,25 @@ interface UpcomingTaskCardProps {
   onStartPress: (taskId: string, event: any) => void;
 }
 
-const UpcomingTaskCard: React.FC<UpcomingTaskCardProps> = ({ 
-  task, 
-  onTaskPress, 
-  onStartPress 
+const UpcomingTaskCard: React.FC<UpcomingTaskCardProps> = ({
+  task,
+  onTaskPress,
+  onStartPress
 }) => {
   return (
-    <TouchableOpacity 
-      key={task.id} 
+    <TouchableOpacity
+      key={task.id}
       className="mb-4 bg-white rounded-lg overflow-hidden shadow-sm"
       onPress={() => onTaskPress(task.id)}
       activeOpacity={0.7}
     >
-      <View className="p-4 pb-2">
+      <View className="p-2 pb-2">
         <View className="flex-row justify-between items-center">
           <View className="flex-row items-center">
             <Ionicons name="calendar-outline" size={20} color={colors.subtle} />
             <Text className="ml-2 text-[15px] text-gray-700">{task.time}, {task.date}</Text>
           </View>
-          <TouchableOpacity 
+          <TouchableOpacity
             className="bg-gray-100 rounded-full px-4 py-1 flex-row items-center"
             style={{ backgroundColor: colors.background.primary }}
             onPress={(e) => onStartPress(task.id, e)}
@@ -43,17 +43,17 @@ const UpcomingTaskCard: React.FC<UpcomingTaskCardProps> = ({
       <View className="px-4 pt-2 pb-4">
         <View className="flex-row items-start mb-4">
           <View className="mr-3 items-center">
-            <View className="w-8 h-8 rounded-full bg-green-100 items-center justify-center" 
-                  style={{ backgroundColor: '#E8F5E9' }}>
+            <View className="w-8 h-8 rounded-full bg-green-100 items-center justify-center"
+              style={{ backgroundColor: '#E8F5E9' }}>
               <View className="w-3 h-3 rounded-full" style={{ backgroundColor: colors.light_green }} />
             </View>
             <View className="h-14 w-[1px] bg-gray-300 my-1" />
             <View className="w-8 h-8 rounded-full bg-red-100 items-center justify-center"
-                  style={{ backgroundColor: '#FFEBEE' }}>
+              style={{ backgroundColor: '#FFEBEE' }}>
               <View className="w-3 h-3 rounded-full" style={{ backgroundColor: colors.light_red }} />
             </View>
           </View>
-          
+
           <View className="flex-1">
             <View className="mb-4">
               <Text className="text-[12px] text-gray-500 mb-1">PICKUP</Text>
@@ -64,29 +64,36 @@ const UpcomingTaskCard: React.FC<UpcomingTaskCardProps> = ({
                 </Text>
               </View>
             </View>
-            
+
             <View>
               <Text className="text-[12px] text-gray-500 mb-1">DROP-OFF</Text>
               <Text className="text-[14px] font-medium">{task.dropOffLocation}</Text>
             </View>
           </View>
         </View>
-        
+
         <View className="flex-row items-center justify-between pt-2 border-t border-gray-100">
-          <View className="flex-row items-center">
-            <Ionicons name="car-outline" size={20} color={colors.subtle} />
+
+          <View className="w-9 h-9 justify-center items-center">
+            <Image
+              source={require('@/assets/images/home/car-black-side-silhouette (1).png')}
+              className="w-9 h-6 resize-contain"
+            />
+          </View>
+          <View className="flex-col items-center">
+            {/* <Ionicons name="car-outline" size={20} color={colors.subtle} /> */}
             <Text className="text-[13px] text-gray-700 font-medium ml-2">DISTANCE</Text>
             <Text className="text-[13px] font-bold ml-1">{task.distance}</Text>
           </View>
-          
-          <View className="flex-row items-center">
-            <Ionicons name="time-outline" size={18} color={colors.subtle} />
+
+          <View className="flex-col items-center">
+            {/* <Ionicons name="time-outline" size={18} color={colors.subtle} /> */}
             <Text className="text-[13px] text-gray-700 font-medium ml-1">TIME</Text>
             <Text className="text-[13px] font-bold ml-1">{task.duration}</Text>
           </View>
-          
-          <View className="flex-row items-center">
-            <Ionicons name="pricetag-outline" size={18} color={colors.subtle} />
+
+          <View className="flex-col items-center">
+            {/* <Ionicons name="pricetag-outline" size={18} color={colors.subtle} /> */}
             <Text className="text-[13px] text-gray-700 font-medium ml-1">PRICE</Text>
             <Text className="text-[13px] font-bold ml-1">{task.price}</Text>
           </View>

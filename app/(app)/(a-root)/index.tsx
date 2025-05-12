@@ -6,17 +6,33 @@ import { Ionicons } from '@expo/vector-icons'
 import colors from '@/lib/colors'
 import { router } from 'expo-router'
 import useSession from '@/store/useSession'
+import CurrentTaskCard from '@/components/specific/home/CurrentTaskCard'
 
 const DriverHome = () => {
+  // Sample driver data
   const driverData = {
-    name: 'David Russel',
-    id: 'PO 123FF',
-    status: 'ONLINE',
-    loggedTime: 'Jan 4, 4:21 AM',
-    sessionDuration: '04:21:32',
-    date: 'Monday Dec 27, 2025'
+    name: 'John Doe',
+    id: 'ID-12345',
+    status: 'Available',
+    loggedTime: '10:30 AM',
+    sessionDuration: '4h 30m',
+    date: 'Today, 24 Jan 2023',
   }
-  
+
+  // Sample current task data
+  const currentTasks = [
+    {
+      id: '1',
+      customerName: 'John Doe',
+      vehicleInfo: 'Nisan CTR - B457XD',
+      dateTime: '10:30 PM, Jan 29 2025',
+      pickupLocation: 'Okopowa 11/72, 01-042 Warszawa',
+      distanceTime: '12 km - 30 min EST',
+      dropoffLocation: '105 William St, Chicago, US',
+      status: 'assigned'
+    }
+  ]
+
   return (
     <SafeAreaView className="flex-1 bg-[#F5F7FA]" edges={['top']}>
       <StatusBar barStyle="dark-content" backgroundColor="#F5F7FA" />
@@ -77,23 +93,36 @@ const DriverHome = () => {
               Current Task
             </Text>
             
-            {/* Only showing the No Tasks view as per the Figma design */}
-            <View className="bg-[#EEF2F7] rounded-xl p-6 items-center shadow-sm">
-              {/* Using SVG components to match the illustration in Figma */}
-              <View className="w-[180px] h-[120px] mb-4 justify-center items-center">
-                <Ionicons name="person-outline" size={60} color="#A0A0A0" style={{ position: 'absolute', left: 20 }} />
-                <Ionicons name="desktop-outline" size={65} color="#A0A0A0" style={{ position: 'absolute', right: 20 }} />
-                <Ionicons name="document-outline" size={30} color="#A0A0A0" style={{ position: 'absolute', top: 15, right: 45 }} />
+            {/* Conditionally show either the Current Task or No Tasks view */}
+            {currentTasks.length > 0 ? (
+              // Current Task Card (when a task is assigned)
+              currentTasks.map((task) => (
+                <CurrentTaskCard 
+                  key={task.id}
+                  data={task}
+                  onAccept={() => router.push(`/assigned-task/${task.id}`)}
+                  onReject={() => alert('Task rejected')}
+                />
+              ))
+            ) : (
+              // No Tasks view
+              <View className="bg-[#EEF2F7] rounded-xl p-6 items-center shadow-sm">
+                {/* Using SVG components to match the illustration in Figma */}
+                <View className="w-[180px] h-[120px] mb-4 justify-center items-center">
+                  <Ionicons name="person-outline" size={60} color="#A0A0A0" style={{ position: 'absolute', left: 20 }} />
+                  <Ionicons name="desktop-outline" size={65} color="#A0A0A0" style={{ position: 'absolute', right: 20 }} />
+                  <Ionicons name="document-outline" size={30} color="#A0A0A0" style={{ position: 'absolute', top: 15, right: 45 }} />
+                </View>
+                
+                <Text className="text-base font-semibold text-default mb-2">
+                  No Assigned Tasks
+                </Text>
+                
+                <Text className="text-sm text-subtle text-center leading-5 max-w-[90%]">
+                  You have no tasks assigned at the moment. Sit back and relax or check back later for updates.
+                </Text>
               </View>
-              
-              <Text className="text-base font-semibold text-default mb-2">
-                No Assigned Tasks
-              </Text>
-              
-              <Text className="text-sm text-subtle text-center leading-5 max-w-[90%]">
-                You have no tasks assigned at the moment. Sit back and relax or check back later for updates.
-              </Text>
-            </View>
+            )}
           </View>
         </ScrollView>
       </View>

@@ -16,7 +16,7 @@ const AssignedTaskPage = () => {
   const [loading, setLoading] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
 
-  // Sample data for tasks
+
   const tasks: TaskItem[] = [
     {
       id: '1',
@@ -160,15 +160,14 @@ const AssignedTaskPage = () => {
       <StatusBar barStyle="light-content" backgroundColor="#00296B" />
       
       {/* Header with blue background */}
-      <View className="bg-[#00296B]">
+      <View className="bg-white px-4 pt-4">
         {/* Tab Navigation */}
-        <View className="flex-row">
+        <View className="flex-row bg-[#EBF2F7] rounded-full overflow-hidden border border-[#EBF2F7]">
           <TouchableOpacity 
-            className="flex-1 py-4 items-center"
+            className="flex-1 py-3 items-center"
             style={{
-              backgroundColor: activeTab === 'upcoming' ? '#00296B' : '#EBF2F7',
-              borderBottomWidth: activeTab === 'upcoming' ? 3 : 0,
-              borderBottomColor: activeTab === 'upcoming' ? 'white' : 'transparent'
+              backgroundColor: activeTab === 'upcoming' ? '#00296B' : 'transparent',
+              borderRadius: 9999,
             }}
             onPress={() => setActiveTab('upcoming')}
           >
@@ -181,11 +180,10 @@ const AssignedTaskPage = () => {
           </TouchableOpacity>
           
           <TouchableOpacity 
-            className="flex-1 py-4 items-center"
+            className="flex-1 py-3 items-center"
             style={{
-              backgroundColor: activeTab === 'assigned' ? '#00296B' : '#EBF2F7',
-              borderBottomWidth: activeTab === 'assigned' ? 3 : 0,
-              borderBottomColor: activeTab === 'assigned' ? 'white' : 'transparent'
+              backgroundColor: activeTab === 'assigned' ? '#00296B' : 'transparent',
+              borderRadius: 9999,
             }}
             onPress={() => setActiveTab('assigned')}
           >
@@ -219,7 +217,7 @@ const AssignedTaskPage = () => {
 
       {/* Tasks List */}
       {/* Loading overlay */}
-      {loading && (
+      {/* {loading && (
         <View style={{
           position: 'absolute',
           left: 0,
@@ -241,10 +239,10 @@ const AssignedTaskPage = () => {
             <Text style={{ marginTop: 10, color: colors.default }}>Loading...</Text>
           </View>
         </View>
-      )}
+      )} */}
       
       <ScrollView 
-        className="flex-1 px-4"
+        className="flex-1 px-2"
         showsVerticalScrollIndicator={false}
         onScrollBeginDrag={() => console.log('Scrolling started')}
         refreshControl={
