@@ -8,6 +8,7 @@ import { useRouter } from 'expo-router'
 import UpcomingTaskCard from '@/components/specific/assigntask/UpcomingTaskCard'
 import AssignedTaskCard from '@/components/specific/assigntask/AssignedTaskCard'
 import { TaskItem } from '@/components/specific/assigntask/types'
+import Header from '@/components/common/Header'
 
 const AssignedTaskPage = () => {
   const router = useRouter()
@@ -62,6 +63,7 @@ const AssignedTaskPage = () => {
       duration: '1hour 1 min',
       price: '$45.00',
       status: 'assigned'
+      
     },
     {
       id: '4',
@@ -121,7 +123,6 @@ const AssignedTaskPage = () => {
   // Function to filter tasks based on search text
   const searchTasks = (task: TaskItem) => {
     if (searchText.trim() === '') return true
-    
     const searchLower = searchText.toLowerCase()
     return (
       task.pickupLocation.toLowerCase().includes(searchLower) ||
@@ -132,7 +133,6 @@ const AssignedTaskPage = () => {
     )
   }
 
-  // Render task item based on which tab is active
   const renderTaskItem = (task: TaskItem) => {
     if (activeTab === 'assigned') {
       return (
@@ -156,12 +156,9 @@ const AssignedTaskPage = () => {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={['top']}>
-      <StatusBar barStyle="light-content" backgroundColor="#00296B" />
-      
-      {/* Header with blue background */}
-      <View className="bg-white px-4 pt-4">
-        {/* Tab Navigation */}
+    <SafeAreaView className="flex-1 bg-white" >
+      <Header title=''/>
+      <View className="bg-white px-2 pt-4">
         <View className="flex-row bg-[#EBF2F7] rounded-full overflow-hidden border border-[#EBF2F7]">
           <TouchableOpacity 
             className="flex-1 py-3 items-center"
@@ -196,12 +193,10 @@ const AssignedTaskPage = () => {
           </TouchableOpacity>
         </View>
       </View>
-
-      {/* Search Bar */}
-      <View className="px-4 py-4">
+      <View className="px-2 py-4">
         <View className="flex-row items-center justify-between">
-          <View className="flex-row items-center bg-gray-100 rounded-md px-3 py-2 flex-1 mr-2">
-            <Ionicons name="search" size={20} color={colors.subtle} />
+          <View className="flex-row items-center bg-gray-100 rounded-md px-3 flex-1 mr-1">
+            <Ionicons name="search" size={24} color={colors.subtle} />
             <TextInput
               className="flex-1 ml-2 text-base"
               placeholder="Search"
@@ -210,37 +205,10 @@ const AssignedTaskPage = () => {
             />
           </View>
           <TouchableOpacity>
-            <Ionicons name="filter-outline" size={22} color={colors.default} />
+            <Ionicons name="filter-outline" size={24} color={colors.default} />
           </TouchableOpacity>
         </View>
-      </View>
-
-      {/* Tasks List */}
-      {/* Loading overlay */}
-      {/* {loading && (
-        <View style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: 0,
-          bottom: 0,
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: 'rgba(0,0,0,0.3)',
-          zIndex: 1000
-        }}>
-          <View style={{
-            padding: 20,
-            borderRadius: 10,
-            backgroundColor: 'white',
-            alignItems: 'center'
-          }}>
-            <ActivityIndicator size="large" color={colors.primary} />
-            <Text style={{ marginTop: 10, color: colors.default }}>Loading...</Text>
-          </View>
-        </View>
-      )} */}
-      
+      </View>      
       <ScrollView 
         className="flex-1 px-2"
         showsVerticalScrollIndicator={false}
