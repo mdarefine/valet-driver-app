@@ -9,14 +9,16 @@ import UpcomingTaskCard from '@/components/specific/assigntask/UpcomingTaskCard'
 import AssignedTaskCard from '@/components/specific/assigntask/AssignedTaskCard'
 import { TaskItem } from '@/components/specific/assigntask/types'
 import Header from '@/components/common/Header'
+import SearchFilterBar from '@/components/common/SearchFilterBar'
 
-const AssignedTaskPage = () => {
+export default function AssignedTaskPage() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<'upcoming' | 'assigned'>('upcoming')
   const [searchText, setSearchText] = useState('')
+  const [filters, setFilters] = useState<any>(null)
+  const [filteredTasks, setFilteredTasks] = useState<TaskItem[]>([])
   const [loading, setLoading] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
-
 
   const tasks: TaskItem[] = [
     {
@@ -63,7 +65,6 @@ const AssignedTaskPage = () => {
       duration: '1hour 1 min',
       price: '$45.00',
       status: 'assigned'
-      
     },
     {
       id: '4',
@@ -82,76 +83,84 @@ const AssignedTaskPage = () => {
     }
   ]
 
-  const filteredTasks = tasks.filter(task => task.status === activeTab)
+  useEffect(() => {
+    const filtered = tasks.filter(task => {
+      if (searchText.trim() !== '') {
+        const searchLower = searchText.toLowerCase()
+        const matchesSearch = (
+          task.pickupLocation.toLowerCase().includes(searchLower) ||
+          task.dropOffLocation.toLowerCase().includes(searchLower) ||
+          task.time.toLowerCase().includes(searchLower) ||
+          task.date.toLowerCase().includes(searchLower)
+        )
+        if (!matchesSearch) return false
+      }
 
-  // Handle navigation to booking details
+      if (filters?.date) {
+        const filterDate = filters.date.toDateString()
+        const taskDate = new Date(task.date).toDateString()
+        if (taskDate !== filterDate) return false
+      }
+
+      return true
+    })
+
+    setFilteredTasks(filtered)
+  }, [searchText, filters, tasks])
+
+  const handleSearch = (text: string) => {
+    setSearchText(text)
+  }
+
+  const handleFilter = (appliedFilters: any) => {
+    console.log('Filters applied:', appliedFilters)
+    setFilters(appliedFilters)
+  }
+
   const navigateToBookingDetails = (taskId: string) => {
-    // You could show a loading indicator here
     setLoading(true)
-    
-    // Simulate API call delay
+
     setTimeout(() => {
       setLoading(false)
-      // Navigate with the correct format for Expo Router dynamic routes
       router.push({
         pathname: '/(app)/(a-root)/assigned-task/[id]',
         params: { id: taskId }
       } as any)
     }, 300)
   }
-  
-  // Handle the start button click
+
   const handleStartTask = (taskId: string, event: any) => {
-    // Stop event propagation so it doesn't trigger the card click
     event.stopPropagation()
-    
-    // Navigate to booking details
     navigateToBookingDetails(taskId)
   }
-  
-  // Refresh the task list
+
   const refreshTasks = () => {
     setRefreshing(true)
-    
-    // Simulate API call delay
+
     setTimeout(() => {
       setRefreshing(false)
-      // In a real app, you would fetch updated tasks here
     }, 1500)
-  }
-
-  // Function to filter tasks based on search text
-  const searchTasks = (task: TaskItem) => {
-    if (searchText.trim() === '') return true
-    const searchLower = searchText.toLowerCase()
-    return (
-      task.pickupLocation.toLowerCase().includes(searchLower) ||
-      task.dropOffLocation.toLowerCase().includes(searchLower) ||
-      task.time.toLowerCase().includes(searchLower) ||
-      task.date.toLowerCase().includes(searchLower) ||
-      task.price.toLowerCase().includes(searchLower)
-    )
   }
 
   const renderTaskItem = (task: TaskItem) => {
     if (activeTab === 'assigned') {
       return (
-        <AssignedTaskCard 
+        <AssignedTaskCard
           key={task.id}
           task={task}
           onAcceptPress={navigateToBookingDetails}
           onRejectPress={(taskId) => Alert.alert('Reject', 'Task rejected')}
         />
-      );
+      )
     } else {
       return (
-        <UpcomingTaskCard 
+        <UpcomingTaskCard
           key={task.id}
           task={task}
           onTaskPress={navigateToBookingDetails}
           onStartPress={handleStartTask}
         />
-      );
+      )
     }
   }
 
@@ -194,20 +203,11 @@ const AssignedTaskPage = () => {
         </View>
       </View>
       <View className="px-2 py-4">
-        <View className="flex-row items-center justify-between">
-          <View className="flex-row items-center bg-gray-100 rounded-md px-3 flex-1 mr-1">
-            <Ionicons name="search" size={24} color={colors.subtle} />
-            <TextInput
-              className="flex-1 ml-2 text-base"
-              placeholder="Search"
-              value={searchText}
-              onChangeText={setSearchText}
-            />
-          </View>
-          <TouchableOpacity>
-            <Ionicons name="filter-outline" size={24} color={colors.default} />
-          </TouchableOpacity>
-        </View>
+        <SearchFilterBar
+          onSearch={handleSearch}
+          onFilter={handleFilter}
+          initialSearchValue={searchText}
+        />
       </View>      
       <ScrollView 
         className="flex-1 px-2"
@@ -222,8 +222,8 @@ const AssignedTaskPage = () => {
           />
         }
       >
-        {filteredTasks.filter(searchTasks).length > 0 ? (
-          filteredTasks.filter(searchTasks).map(task => renderTaskItem(task))
+        {filteredTasks.filter(task => task.status === activeTab).length > 0 ? (
+          filteredTasks.filter(task => task.status === activeTab).map(task => renderTaskItem(task))
         ) : (
           <View className="flex-1 items-center justify-center py-8">
             <Ionicons name="car-outline" size={60} color={colors.gray03} />
@@ -242,5 +242,3 @@ const AssignedTaskPage = () => {
     </SafeAreaView>
   )
 }
-
-export default AssignedTaskPage
