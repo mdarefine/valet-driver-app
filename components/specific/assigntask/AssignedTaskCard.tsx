@@ -78,14 +78,14 @@ const AssignedTaskCard: React.FC<AssignedTaskCardProps> = ({
       {/* Action Buttons */}
       <View className="flex-row mt-2">
         <TouchableOpacity 
-          className="flex-1 py-3 border border-[#E94A47] rounded-lg items-center justify-center mr-2"
+          className="flex-1 py-1.5 border border-[#E94A47] rounded-lg items-center justify-center mr-2"
           onPress={() => onRejectPress(task.id)}
         >
           <Text className="text-[#E94A47] font-medium">Reject</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
-          className="flex-1 py-3 bg-[#00296B] rounded-lg items-center justify-center ml-2"
+          className="flex-1 py-1.5 bg-[#00296B] rounded-lg items-center justify-center ml-2"
           onPress={() => onAcceptPress(task.id)}
         >
           <Text className="text-white font-medium">Accept</Text>

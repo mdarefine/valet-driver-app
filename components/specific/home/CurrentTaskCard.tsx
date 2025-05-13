@@ -27,7 +27,7 @@ const CurrentTaskCard: React.FC<CurrentTaskProps> = ({
   onReject
 }) => {
   return (
-    <View className="bg-white rounded-xl overflow-hidden border border-[#2196F3]">
+    <View className="bg-white rounded-xl overflow-hidden ">
       {/* Customer Info */}
       <View className="p-4 pb-3 flex-row items-center justify-between">
         <View className="flex-row items-center">
@@ -41,13 +41,13 @@ const CurrentTaskCard: React.FC<CurrentTaskProps> = ({
           </View>
         </View>
         
-        <View className="bg-orange-50 rounded-full px-3 py-1">
+        <View className="bg-orange-50 rounded-full px-3 py-1 border border-orange-50">
           <Text className="text-orange-500 text-xs font-medium">{data.status === 'assigned' ? 'Assigned' : data.status}</Text>
         </View>
       </View>
       
       {/* Date Time */}
-      <View className="px-4 py-2 flex-row items-center border-b border-gray-100">
+      <View className="px-4 py-2 flex-row items-center border-y border-gray-100">
         <Ionicons name="calendar-outline" size={18} color="#00296B" />
         <Text className="ml-2 text-gray-700 text-sm">{data.dateTime}</Text>
       </View>
@@ -84,14 +84,14 @@ const CurrentTaskCard: React.FC<CurrentTaskProps> = ({
         {/* Buttons */}
         <View className="flex-row mt-2 space-x-3">
           <TouchableOpacity 
-            className="flex-1 py-2.5 border border-red-200 rounded-md items-center"
+            className="flex-1 py-1.5 border border-red-200 rounded-md items-center"
             onPress={onReject}
           >
             <Text className="text-red-500 font-medium">Reject</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
-            className="flex-1 py-2.5 bg-[#00296B] rounded-md items-center"
+            className="flex-1 py-1.5 bg-[#00296B] rounded-md items-center"
             onPress={onAccept}
           >
             <Text className="text-white font-medium">Accept</Text>

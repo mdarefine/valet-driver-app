@@ -209,7 +209,7 @@ const BookingOverview = () => {
       {/* Bottom button */}
       <View className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100">
         <TouchableOpacity 
-          className="bg-primary py-4 rounded-md items-center"
+          className="bg-primary py-2 rounded-md items-center"
           onPress={() => {
             if (isComplete) return;
             if (isStarted) {

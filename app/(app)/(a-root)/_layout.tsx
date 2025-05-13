@@ -1,6 +1,6 @@
 import React from 'react'
-import { Href, Tabs } from 'expo-router'
-import { Text, View } from 'react-native'
+import { Href, Tabs, usePathname } from 'expo-router'
+import { Text } from 'react-native'
 import HomeIcon from '@/assets/svgs/tabs/HomeIcon'
 import HomeOutlineIcon from '@/assets/svgs/tabs/HomeOutlineIcon'
 import DealsIcon from '@/assets/svgs/tabs/DealsIcon'
@@ -9,10 +9,21 @@ import MyCarsIcon from '@/assets/svgs/tabs/MyCarsIcon'
 import MyCarsOutlineIcon from '@/assets/svgs/tabs/MyCarsOutlineIcon'
 import ProfileIcon from '@/assets/svgs/tabs/ProfileIcon'
 import ProfileOutlineIcon from '@/assets/svgs/tabs/ProfileOutlineIcon'
-import ShopIcon from '@/assets/svgs/tabs/ShopIcon'
-import ShopOutlineIcon from '@/assets/svgs/tabs/ShopOutlineIcon'
 import colors from '@/lib/colors'
+
 const RootLayout = () => {
+  // Get current route path
+  const pathname = usePathname();
+  
+  // Define routes that should hide tab bar
+  const shouldHideTabBar = 
+    pathname.includes('/assigned-task/booking-overview') ||
+    pathname.includes('/profile/personal-info') ||
+    pathname.includes('/profile/change-password') ||
+    (pathname.includes('/assigned-task/') && 
+      !pathname.endsWith('/assigned-task') && 
+      !pathname.endsWith('/assigned-task/'));
+  
   const tabs = [
     {
       headerShown: false,
@@ -53,7 +64,7 @@ const RootLayout = () => {
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.disable,
-        tabBarStyle: {
+        tabBarStyle: shouldHideTabBar ? { display: 'none' } : {
           backgroundColor: 'white',
           paddingBottom: 8,
           height: 65,

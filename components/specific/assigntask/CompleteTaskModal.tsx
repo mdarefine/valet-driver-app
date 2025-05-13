@@ -48,7 +48,7 @@ const CompleteTaskModal: React.FC<CompleteTaskModalProps> = ({
           />
           
           <TouchableOpacity 
-            className="bg-primary py-3 rounded-md items-center"
+            className="bg-primary py-1.5 rounded-md items-center"
             onPress={onComplete}
           >
             <Text className="text-white font-medium">Mark as complete</Text>
