@@ -7,6 +7,7 @@ import colors from '@/lib/colors'
 import { router } from 'expo-router'
 import useSession from '@/store/useSession'
 import CurrentTaskCard from '@/components/specific/home/CurrentTaskCard'
+import Header from '@/components/common/Header'
 
 const DriverHome = () => {
   // Sample driver data
@@ -29,26 +30,18 @@ const DriverHome = () => {
       pickupLocation: 'Okopowa 11/72, 01-042 Warszawa',
       distanceTime: '12 km - 30 min EST',
       dropoffLocation: '105 William St, Chicago, US',
-      status: 'assigned'
+      status: 'assigned',
+      profileImage: 'https://randomuser.me/api/portraits/men/32.jpg'
     }
   ]
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F5F7FA]" edges={['top']}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F5F7FA" />
+    <SafeAreaView className="flex-1 bg-[#F5F7FA]" >
+      <Header title="Driver Home" />
       <View className="flex-1 bg-[#F5F7FA]">
-        {/* Header */}
-        <View className="px-5 py-3">
-          <Text className="text-lg font-semibold text-default">
-            Driver Home
-          </Text>
-        </View>
-
-        {/* Content Area */}
-        <ScrollView className="flex-1 px-5">
-          {/* Welcome Card */}
-          <View className="mb-6">
-            <View className="flex-row justify-between items-center mb-1.5">
+        <ScrollView className="flex-1 ">
+          <View className="mb-6 px-4">
+            <View className="flex-row justify-between items-center my-2">
               <View>
                 <Text className="text-base font-semibold text-default">
                   Welcome . {driverData.name}
@@ -61,14 +54,12 @@ const DriverHome = () => {
                 <Ionicons name="notifications-outline" size={24} color={colors.default} />
               </TouchableOpacity>
             </View>
-
-            {/* Driver Info Card */}
-            <View className="bg-white rounded-xl p-4 shadow-sm mt-2">
-              <View className="flex-row justify-between mb-4">
+            <View className="bg-white rounded-xl  shadow-sm mt-2">
+              <View className="flex-row justify-between mb-4 p-4 pb-0">
                 <View className="flex-row">
-                  <Image 
-                    source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }} 
-                    className="w-12 h-12 rounded-full bg-[#C7B1FF] mr-3" 
+                  <Image
+                    source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }}
+                    className="w-12 h-12 rounded-full bg-[#C7B1FF] mr-3"
                   />
                   <View className="justify-center">
                     <Text className="text-default font-semibold">{driverData.name}</Text>
@@ -79,25 +70,33 @@ const DriverHome = () => {
                   <Text className="text-[#4CAF50] text-xs font-medium">ONLINE</Text>
                 </View>
               </View>
-              
-              <View className="flex-row justify-between border-t border-[#F0F0F0] pt-3">
-                <Text className="text-subtle text-sm">Logged from {driverData.loggedTime}</Text>
-                <Text className="text-default text-sm font-medium">{driverData.sessionDuration}</Text>
+              <View
+                className="flex-row justify-between border-t border-[#F0F0F0] pt-3 p-4 rounded-b-xl"
+                style={{ backgroundColor: colors.light }}
+              >
+                <Text
+                  className="text-sm text-primary"
+
+                >
+                  Logged in at {driverData.loggedTime}
+                </Text>
+
+                <Text
+                  className="text-sm font-medium text-primary"
+                >
+                  {driverData.sessionDuration}
+                </Text>
               </View>
             </View>
           </View>
 
-          {/* Current Task Section */}
-          <View>
-            <Text className="text-base font-semibold text-default mb-4">
+          <View className=' p-4 rounded-t-3xl ' style={{ backgroundColor: colors.light, }}>
+            <Text className="text-xl font-semibold text-default my-4">
               Current Task
             </Text>
-            
-            {/* Conditionally show either the Current Task or No Tasks view */}
             {currentTasks.length > 0 ? (
-              // Current Task Card (when a task is assigned)
               currentTasks.map((task) => (
-                <CurrentTaskCard 
+                <CurrentTaskCard
                   key={task.id}
                   data={task}
                   onAccept={() => router.push(`/assigned-task/${task.id}`)}
@@ -105,19 +104,12 @@ const DriverHome = () => {
                 />
               ))
             ) : (
-              // No Tasks view
               <View className="bg-[#EEF2F7] rounded-xl p-6 items-center shadow-sm">
-                {/* Using SVG components to match the illustration in Figma */}
-                <View className="w-[180px] h-[120px] mb-4 justify-center items-center">
-                  <Ionicons name="person-outline" size={60} color="#A0A0A0" style={{ position: 'absolute', left: 20 }} />
-                  <Ionicons name="desktop-outline" size={65} color="#A0A0A0" style={{ position: 'absolute', right: 20 }} />
-                  <Ionicons name="document-outline" size={30} color="#A0A0A0" style={{ position: 'absolute', top: 15, right: 45 }} />
-                </View>
-                
+                <Image source={require('@/assets/images/no-data-bro.png')} className="w-[180px] h-[120px] mb-4 justify-center items-center" />
                 <Text className="text-base font-semibold text-default mb-2">
                   No Assigned Tasks
                 </Text>
-                
+
                 <Text className="text-sm text-subtle text-center leading-5 max-w-[90%]">
                   You have no tasks assigned at the moment. Sit back and relax or check back later for updates.
                 </Text>

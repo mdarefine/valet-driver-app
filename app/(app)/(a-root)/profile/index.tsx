@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
-import { View, Text, Image, TouchableOpacity, Modal, Pressable, ScrollView } from 'react-native'
+import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Header from '@/components/common/Header'
 import colors from '@/lib/colors'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
+import * as ImagePicker from 'expo-image-picker'
+import ImageUploadModal from '@/components/specific/profile/ImageUploadModal'
+import LogoutConfirmModal from '@/components/specific/profile/LogoutConfirmModal'
 
 interface ProfileOption {
   id: string
@@ -17,6 +20,8 @@ interface ProfileOption {
 
 const Profile = () => {
   const [logoutModalVisible, setLogoutModalVisible] = useState(false)
+  const [profileImage, setProfileImage] = useState('https://randomuser.me/api/portraits/men/32.jpg')
+  const [imageUploadModal, setImageUploadModal] = useState(false)
 
   // Mock user data
   const userData = {
@@ -24,13 +29,67 @@ const Profile = () => {
     email: 'davidrussel@gmail.com',
     phone: '+65 1234 5678',
     address: 'Okopowa 11/72, 01-042 Warszawa',
-    joinedDate: 'Jan 15, 2023'
+    joinedDate: 'Jan 15, 2023',
+    profileImage: null // Set to image URL when available, null for no image
   }
+
+  // Get initials from name
 
   const handleLogout = () => {
     // Implement actual logout logic here
     setLogoutModalVisible(false)
     // Navigate to login screen or perform other logout actions
+  }
+
+  const handleImagePicker = () => {
+    setImageUploadModal(true)
+  }
+
+  const handleImageSelection = async (type: string) => {
+    setImageUploadModal(false)
+
+    try {
+      let result;
+
+      if (type === 'camera') {
+        // Request camera permissions
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera permissions to take a picture!');
+          return;
+        }
+
+        result = await ImagePicker.launchCameraAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 0.8,
+        });
+      } else {
+        // Request media library permissions
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need media library permissions to select an image!');
+          return;
+        }
+
+        result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 0.8,
+        });
+      }
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setProfileImage(result.assets[0].uri);
+        // Here you would typically upload the image to your server
+        // uploadImageToServer(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Error selecting image:', error);
+      alert('An error occurred while selecting the image');
+    }
   }
 
   const profileOptions: ProfileOption[] = [
@@ -61,22 +120,47 @@ const Profile = () => {
       style={{ backgroundColor: colors.primary }}
       edges={['top']}>
       <Header title="Profile" />
-      <ScrollView className="flex-1 bg-[#F5F7FA]">
-        {/* User Profile Section */}
-        <View className="items-center pt-8 pb-6 bg-white">
-          <View className="w-20 h-20 rounded-full mb-2 bg-[#E5E0FF] items-center justify-center">
-            <Text className="text-2xl font-semibold text-primary">DR</Text>
-          </View>
-          <Text className="text-sm text-default">{userData.email}</Text>
+      <ScrollView className="flex-1 " style={{ backgroundColor: colors.textwhite }}>
+        <View className="items-center pt-8 pb-6 mx-4 border-b border-[#EAEAEA]">
+          <TouchableOpacity onPress={handleImagePicker} activeOpacity={0.8}>
+            <View className="relative">
+              <View className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg">
+                <Image
+                  source={{ uri: profileImage }}
+                  className="w-full h-full"
+                />
+              </View>
+              <View
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: [{ translateX: -40 }, { translateY: -20 }],
+                  width: 80,
+                  height: 40,
+                  borderRadius: 20,
+                  backgroundColor: 'transparent',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  gap: 4,
+                }}
+              >
+                <Ionicons name="pencil" size={16} color="white" />
+                <Text style={{ color: 'white', fontWeight: '500' }}>Edit</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+          <Text className="text-base text-gray-700 mt-4 font-medium">
+            {userData.email}
+          </Text>
         </View>
-
-        {/* Profile Options */}
-        <View className="p-5">
-          <View className="bg-white rounded-lg shadow-sm mb-4 overflow-hidden">
+        <View className="p-4">
+          <View className=" mb-4 overflow-hidden">
             {profileOptions.map((option, index) => (
               <TouchableOpacity
                 key={option.id}
-                className={`flex-row items-center py-4 px-5 ${index !== profileOptions.length - 1 ? 'border-b border-[#EAEAEA]' : ''}`}
+                className={`flex-row items-center py-5  ${index !== profileOptions.length - 1 ? '' : ''}`}
                 onPress={() => {
                   if (option.action) {
                     option.action()
@@ -103,41 +187,17 @@ const Profile = () => {
           </View>
         </View>
       </ScrollView>
-
-      {/* Logout Confirmation Modal */}
-      <Modal
-        animationType="fade"
-        transparent={true}
+      <ImageUploadModal
+        visible={imageUploadModal}
+        onClose={() => setImageUploadModal(false)}
+        onCameraSelect={() => handleImageSelection('camera')}
+        onGallerySelect={() => handleImageSelection('gallery')}
+      />
+      <LogoutConfirmModal
         visible={logoutModalVisible}
-        onRequestClose={() => setLogoutModalVisible(false)}
-      >
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white rounded-lg w-[90%] max-w-[320px] p-6 items-center">
-            <View className="w-14 h-14 rounded-full bg-[#FEE2E2] items-center justify-center mb-4">
-              <Ionicons name="log-out-outline" size={28} color={colors.danger} />
-            </View>
-
-            <Text className="text-lg font-medium text-default mb-2">Log Out</Text>
-            <Text className="text-sm text-center text-subtle mb-6">Are you sure you want to log out?</Text>
-
-            <View className="flex-row w-full">
-              <Pressable
-                className="flex-1 py-3 px-4 mr-2 rounded-lg border border-[#E0E0E0]"
-                onPress={() => setLogoutModalVisible(false)}
-              >
-                <Text className="text-center text-default">Cancel</Text>
-              </Pressable>
-
-              <Pressable
-                className="flex-1 py-3 px-4 ml-2 rounded-lg bg-primary"
-                onPress={handleLogout}
-              >
-                <Text className="text-center text-white">Logout</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        onClose={() => setLogoutModalVisible(false)}
+        onLogout={handleLogout}
+      />
     </SafeAreaView>
   )
 }
