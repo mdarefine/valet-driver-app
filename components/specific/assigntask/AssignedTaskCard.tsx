@@ -36,7 +36,7 @@ const AssignedTaskCard: React.FC<AssignedTaskCardProps> = ({
       </View>
       <View className="flex-row items-center mb-4 border-y border-gray-200 py-5">
         <Ionicons name="calendar-outline" size={24} color={colors.primary} />
-        <Text className="ml-3 text-lg text-default">{task.time}, {task.date}</Text>
+        <Text className="ml-4 text-lg text-default">{task.time}, {task.date}</Text>
       </View>
       <View className="flex-row items-start pb-6 border-b border-gray-200">
         <View className="mr-4 items-center pt-1">

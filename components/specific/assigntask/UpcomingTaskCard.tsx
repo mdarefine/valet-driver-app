@@ -26,7 +26,7 @@ const UpcomingTaskCard: React.FC<UpcomingTaskCardProps> = ({
       <View className="mx-4 py-5 flex-row justify-between items-center  border-b border-gray-100 ">
         <View className="flex-row items-center">
           <Ionicons name="calendar-outline" size={24} color={colors.primary} />
-          <Text className="ml-2 text-lg text-gray-700 font-medium">
+          <Text className="ml-4 text-lg text-gray-700 font-medium">
             {task.time}, {task.date}
           </Text>
         </View>
